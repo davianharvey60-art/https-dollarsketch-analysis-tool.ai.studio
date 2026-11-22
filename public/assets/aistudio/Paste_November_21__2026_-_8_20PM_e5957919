@@ -1,0 +1,1306 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>DollarSketch Analysis Tool | Elite Traders + DeepSeek AI</title>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif; }
+
+    :root {
+      --primary-blue: #00a6ff; --primary-orange: #ff8800; --primary-pink: #ff3b6f;
+      --dark-bg: #0a0a0a; --card-bg: #0d0d0d; --dark-gray: #141414;
+      --text-bright: #ffffff; --text-dim: #cccccc;
+      --success: #00ff88; --danger: #ff3366; --warning: #ffcc00;
+      --border-color: #2a2a2a; --gold-glow: #ffd966; --deepseek-purple: #9b4dff;
+      --tick-up: #00ff88; --tick-down: #ff4466; --tick-neutral: #ffaa33;
+      --body-grad-1: #05070f; --body-grad-2: #0b0e1a;
+      --header-bg: rgba(8, 8, 12, 0.96); --section-bg: rgba(13, 13, 13, 0.9);
+      --gradient-accent-1: var(--primary-orange); --gradient-accent-2: #cc5500;
+      --logo-grad-1: var(--gold-glow); --logo-grad-2: var(--primary-orange); --logo-grad-3: var(--primary-pink);
+      --price-grad-1: #ffaa33; --price-grad-2: #ff6600;
+    }
+
+    body[data-theme="orange"] { --primary-orange: #ff8800; --primary-pink: #ff3b6f; --primary-blue: #00a6ff; --gold-glow: #ffd966; --body-grad-1: #05070f; --body-grad-2: #0b0e1a; --gradient-accent-1: #ff8800; --gradient-accent-2: #cc5500; }
+    body[data-theme="emerald"] { --primary-orange: #00c97b; --primary-pink: #00e5a0; --primary-blue: #00d4ff; --gold-glow: #7dffb8; --success: #00ff88; --danger: #ff4466; --tick-up: #00ff88; --tick-down: #ff4466; --tick-neutral: #7dffb8; --deepseek-purple: #00b894; --body-grad-1: #04120c; --body-grad-2: #0a1f16; --gradient-accent-1: #00c97b; --gradient-accent-2: #008a54; --price-grad-1: #00ffa3; --price-grad-2: #00a86b; --logo-grad-1: #7dffb8; --logo-grad-2: #00c97b; --logo-grad-3: #00e5a0; }
+    body[data-theme="royal"] { --primary-orange: #3d7bff; --primary-pink: #8a6cff; --primary-blue: #00d4ff; --gold-glow: #b3c7ff; --success: #00e5a0; --danger: #ff4466; --tick-up: #00e5a0; --tick-down: #ff4466; --tick-neutral: #ffc857; --deepseek-purple: #a06bff; --body-grad-1: #050818; --body-grad-2: #0a1230; --gradient-accent-1: #3d7bff; --gradient-accent-2: #2550cc; --price-grad-1: #6b9dff; --price-grad-2: #2550cc; --logo-grad-1: #b3c7ff; --logo-grad-2: #3d7bff; --logo-grad-3: #8a6cff; }
+    body[data-theme="crimson"] { --primary-orange: #ff4757; --primary-pink: #ff2e63; --primary-blue: #ff8fa3; --gold-glow: #ffb3c1; --success: #00e5a0; --danger: #ff2e63; --tick-up: #00e5a0; --tick-down: #ff2e63; --tick-neutral: #ffb347; --deepseek-purple: #ff6b9d; --body-grad-1: #170406; --body-grad-2: #2a0a12; --gradient-accent-1: #ff4757; --gradient-accent-2: #c0392b; --price-grad-1: #ff8fa3; --price-grad-2: #c0392b; --logo-grad-1: #ffb3c1; --logo-grad-2: #ff4757; --logo-grad-3: #ff2e63; }
+    body[data-theme="purple"] { --primary-orange: #a855f7; --primary-pink: #ec4899; --primary-blue: #8b5cf6; --gold-glow: #d8b4fe; --success: #00e5a0; --danger: #ff4466; --tick-up: #00e5a0; --tick-down: #ff4466; --tick-neutral: #fbbf24; --deepseek-purple: #c084fc; --body-grad-1: #0d0416; --body-grad-2: #1a0a30; --gradient-accent-1: #a855f7; --gradient-accent-2: #7e22ce; --price-grad-1: #c084fc; --price-grad-2: #7e22ce; --logo-grad-1: #d8b4fe; --logo-grad-2: #a855f7; --logo-grad-3: #ec4899; }
+    body[data-theme="cyber"] { --primary-orange: #00e5ff; --primary-pink: #00ffd5; --primary-blue: #00b4ff; --gold-glow: #a3f7ff; --success: #00ff88; --danger: #ff4466; --tick-up: #00ff88; --tick-down: #ff4466; --tick-neutral: #ffd966; --deepseek-purple: #00d4ff; --body-grad-1: #041014; --body-grad-2: #082028; --gradient-accent-1: #00e5ff; --gradient-accent-2: #0090b3; --price-grad-1: #a3f7ff; --price-grad-2: #0090b3; --logo-grad-1: #a3f7ff; --logo-grad-2: #00e5ff; --logo-grad-3: #00ffd5; }
+    body[data-theme="gold"] { --primary-orange: #ffd700; --primary-pink: #ffaa00; --primary-blue: #ffea70; --gold-glow: #fff3a8; --success: #00e5a0; --danger: #ff4466; --tick-up: #00e5a0; --tick-down: #ff4466; --tick-neutral: #ffea70; --deepseek-purple: #ffbb33; --body-grad-1: #14100a; --body-grad-2: #221c08; --gradient-accent-1: #ffd700; --gradient-accent-2: #b8860b; --price-grad-1: #ffea70; --price-grad-2: #b8860b; --logo-grad-1: #fff3a8; --logo-grad-2: #ffd700; --logo-grad-3: #ffaa00; }
+    body[data-theme="mono"] { --primary-orange: #e0e0e0; --primary-pink: #b0b0b0; --primary-blue: #ffffff; --gold-glow: #f5f5f5; --success: #00e5a0; --danger: #ff4466; --tick-up: #00e5a0; --tick-down: #ff4466; --tick-neutral: #c0c0c0; --deepseek-purple: #d0d0d0; --body-grad-1: #0a0a0a; --body-grad-2: #1a1a1a; --gradient-accent-1: #e0e0e0; --gradient-accent-2: #808080; --price-grad-1: #ffffff; --price-grad-2: #909090; --logo-grad-1: #ffffff; --logo-grad-2: #c0c0c0; --logo-grad-3: #909090; }
+
+    body { background: linear-gradient(135deg, var(--body-grad-1) 0%, var(--body-grad-2) 100%); color: var(--text-bright); min-height: 100vh; overflow-x: hidden; transition: background 0.4s ease; }
+
+    #matrixCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; opacity: 0.15; }
+    .dollar-rain-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; overflow: hidden; }
+    .dollar { position: absolute; color: var(--gold-glow); font-size: 26px; font-weight: bold; text-shadow: 0 0 12px var(--primary-orange); animation: dollarFall linear forwards; z-index: 10000; }
+    @keyframes dollarFall { 0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; } 100% { transform: translateY(110vh) rotate(360deg); opacity: 0; } }
+
+    .anti-inspect-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.98); backdrop-filter: blur(10px); z-index: 20000; display: none; justify-content: center; align-items: center; flex-direction: column; }
+    .anti-inspect-overlay.active { display: flex; }
+    .anti-inspect-box { background: #11161e; border: 2px solid var(--primary-orange); border-radius: 1.5rem; padding: 2rem; text-align: center; max-width: 320px; }
+    .anti-inspect-box i { font-size: 2.5rem; color: var(--primary-orange); margin-bottom: 0.8rem; }
+
+    #debugPanel {
+      position: fixed; bottom: 10px; left: 10px; background: rgba(0, 0, 0, 0.9);
+      border: 1px solid var(--primary-orange); border-radius: 8px; padding: 6px 10px;
+      font-family: monospace; font-size: 0.65rem; color: var(--success);
+      z-index: 99999; max-width: 340px; line-height: 1.4; pointer-events: none;
+    }
+    #debugPanel .line { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    #debugPanel .err { color: var(--danger); }
+    #debugPanel .warn { color: var(--warning); }
+    #debugPanel .ok { color: var(--success); }
+
+    .header, .login-wrapper, #dashboard, #deepseekPage, .whatsapp-float { position: relative; z-index: 10; }
+    .header { background: var(--header-bg); backdrop-filter: blur(12px); padding: 0.8rem 1rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--primary-orange); flex-wrap: wrap; gap: 0.5rem; position: sticky; top: 0; z-index: 100; transition: border-color 0.4s ease; }
+    .logo { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .logo i { font-size: 1.5rem; color: var(--gold-glow); filter: drop-shadow(0 0 8px var(--primary-orange)); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%, 100% { text-shadow: 0 0 5px var(--primary-orange); } 50% { text-shadow: 0 0 20px var(--primary-orange); } }
+    .logo span { font-size: 1rem; font-weight: 800; background: linear-gradient(135deg, var(--logo-grad-1), var(--logo-grad-2), var(--logo-grad-3)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .badge { background: var(--dark-gray); border: 1px solid var(--primary-orange); border-radius: 20px; padding: 0.2rem 0.5rem; font-size: 0.6rem; color: var(--primary-orange); }
+    .price-tag { background: linear-gradient(95deg, var(--price-grad-1), var(--price-grad-2)); border-radius: 20px; padding: 0.2rem 0.8rem; font-size: 0.75rem; font-weight: bold; color: #0a0a0a; box-shadow: 0 0 15px var(--primary-orange); display: inline-flex; align-items: center; gap: 5px; }
+
+    .theme-picker-wrapper { position: relative; z-index: 150; }
+    .theme-toggle-btn { background: var(--dark-gray); border: 2px solid var(--primary-orange); color: var(--primary-orange); width: 42px; height: 42px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; transition: 0.3s; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
+    .theme-toggle-btn:hover { transform: rotate(45deg) scale(1.08); box-shadow: 0 0 18px var(--primary-orange); }
+    .theme-panel { position: absolute; top: 55px; right: 0; width: 260px; background: var(--card-bg); border: 2px solid var(--primary-orange); border-radius: 1rem; padding: 0.9rem; box-shadow: 0 15px 40px rgba(0,0,0,0.85); display: none; flex-direction: column; gap: 0.6rem; animation: fadeUp 0.25s ease; }
+    .theme-panel.active { display: flex; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+    .theme-panel h4 { font-size: 0.75rem; color: var(--primary-orange); text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 6px; }
+    .theme-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; }
+    .theme-swatch { width: 100%; aspect-ratio: 1; border-radius: 10px; cursor: pointer; border: 2px solid transparent; position: relative; transition: 0.2s; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.65rem; font-weight: bold; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
+    .theme-swatch:hover { transform: scale(1.1); border-color: white; }
+    .theme-swatch.active { border-color: var(--gold-glow); box-shadow: 0 0 12px var(--gold-glow); transform: scale(1.08); }
+    .theme-swatch.active::after { content: '\f00c'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; top: -6px; right: -6px; background: var(--success); color: black; width: 16px; height: 16px; border-radius: 50%; font-size: 0.5rem; display: flex; align-items: center; justify-content: center; }
+    .custom-color-row { display: flex; align-items: center; gap: 0.5rem; padding-top: 0.4rem; border-top: 1px solid var(--border-color); }
+    .custom-color-row label { font-size: 0.7rem; color: var(--text-dim); flex: 1; }
+    .custom-color-row input[type="color"] { width: 40px; height: 32px; border: 2px solid var(--primary-orange); border-radius: 8px; background: transparent; cursor: pointer; padding: 2px; }
+    .custom-color-row input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+    .custom-color-row input[type="color"]::-webkit-color-swatch { border: none; border-radius: 5px; }
+
+    .login-wrapper { max-width: 480px; width: 100%; margin: 1rem auto 2rem; background: var(--section-bg); backdrop-filter: blur(10px); border: 2px solid var(--primary-orange); border-radius: 1.5rem; padding: 1.5rem 1.2rem; transition: border-color 0.4s; }
+    .login-wrapper .payment-banner { background: #1a232f; border-radius: 16px; padding: 14px 16px; margin-bottom: 18px; border-left: 4px solid var(--primary-orange); }
+    .login-wrapper .payment-banner .title { font-weight: 700; font-size: 1rem; color: var(--text-bright); }
+    .login-wrapper .payment-banner .title i { color: var(--primary-orange); }
+    .login-wrapper .payment-banner .sub { font-size: 0.8rem; color: #b8c9e0; margin-top: 4px; line-height: 1.4; }
+    .login-wrapper .whatsapp-btn { display: inline-flex; align-items: center; gap: 8px; background: #25D366; color: #0b0e14; font-weight: 700; padding: 6px 16px; border-radius: 40px; margin-top: 8px; font-size: 0.8rem; border: none; cursor: pointer; transition: 0.2s; text-decoration: none; width: fit-content; }
+    .login-wrapper .whatsapp-btn:hover { transform: scale(1.02); background: #20b85f; }
+    .login-wrapper .feature-list { text-align: left; margin: 12px 0 16px; display: flex; flex-direction: column; gap: 6px; }
+    .login-wrapper .feature-list .item { display: flex; align-items: center; gap: 10px; font-size: 0.85rem; color: #d0def0; }
+    .login-wrapper .feature-list .item i { color: var(--primary-orange); width: 18px; text-align: center; }
+    .login-wrapper .big-price { font-size: 2.2rem; font-weight: 800; color: var(--primary-orange); letter-spacing: -1px; }
+    .login-wrapper .price-label { color: #a0b6d0; font-size: 0.85rem; font-weight: 500; }
+    .login-wrapper .lifetime { font-size: 0.75rem; color: #b0c8e0; }
+    .login-wrapper .btn-primary { background: linear-gradient(95deg, var(--gradient-accent-1), var(--gradient-accent-2)); color: white; font-weight: 700; padding: 12px 20px; border-radius: 40px; border: none; width: 100%; font-size: 0.95rem; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .login-wrapper .btn-primary:hover { transform: scale(1.01); box-shadow: 0 4px 15px rgba(255, 255, 255, 0.15); }
+    .login-wrapper .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .login-wrapper .btn-outline { background: transparent; border: 1.5px solid #2f3d52; color: #d0def0; font-weight: 600; padding: 10px 16px; border-radius: 40px; width: 100%; font-size: 0.9rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 8px; }
+    .login-wrapper .btn-outline:hover { border-color: var(--primary-orange); color: var(--primary-orange); }
+    .login-wrapper .form-input { width: 100%; padding: 0.7rem 1rem; background: rgba(26, 26, 26, 0.9); border: 1px solid var(--border-color); border-radius: 0.75rem; color: white; margin: 0.5rem 0; transition: 0.2s; font-size: 1rem; }
+    .login-wrapper .form-input:focus { outline: none; border-color: var(--primary-orange); }
+    .login-wrapper .login-error { color: var(--danger); text-align: center; margin-top: 8px; font-size: 0.8rem; }
+    .login-wrapper .social-icons { display: flex; gap: 0.8rem; justify-content: center; margin-top: 1rem; }
+    .login-wrapper .social-icon { width: 38px; height: 38px; border-radius: 50%; background: var(--dark-gray); border: 1px solid var(--primary-orange); display: flex; align-items: center; justify-content: center; color: var(--primary-orange); text-decoration: none; transition: 0.2s; }
+    .login-wrapper .social-icon:hover { background: #1f1f1f; color: var(--gold-glow); }
+    .login-wrapper .divider { display: flex; align-items: center; gap: 12px; margin: 14px 0 12px; color: #3b4a5e; font-size: 0.7rem; font-weight: 500; }
+    .login-wrapper .divider .line { flex: 1; height: 1px; background: #26303d; }
+
+    .payment-details { background: #0f161e; border-radius: 16px; padding: 12px 14px; margin: 12px 0 8px; border: 1px solid #1f2b38; display: flex; flex-direction: column; gap: 8px; }
+    .payment-details .pd-item { display: flex; align-items: center; gap: 10px; font-size: 0.78rem; color: #b8c9e0; flex-wrap: wrap; }
+    .payment-details .pd-item i { color: var(--primary-orange); width: 18px; text-align: center; font-size: 0.9rem; }
+    .payment-details .pd-item .pd-label { color: #6b7f96; font-weight: 600; min-width: 55px; }
+    .payment-details .pd-item .pd-value { color: var(--gold-glow); font-weight: 700; word-break: break-all; font-family: monospace; font-size: 0.72rem; background: rgba(0,0,0,0.4); padding: 2px 8px; border-radius: 6px; border: 1px solid #1f2b38; }
+    .payment-details .pd-item .pd-value.mpesa { color: #25D366; font-size: 0.85rem; font-weight: 800; }
+    .payment-details .pd-item .copy-btn { background: #1a2634; border: 1px solid var(--primary-orange); color: var(--primary-orange); border-radius: 6px; padding: 2px 8px; font-size: 0.6rem; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+    .payment-details .pd-item .copy-btn:hover { background: var(--primary-orange); color: #0a0a0a; }
+
+    .terms-container { display: flex; align-items: flex-start; gap: 10px; margin: 8px 0 12px; padding: 8px 10px; background: rgba(0, 0, 0, 0.3); border-radius: 10px; border: 1px solid var(--primary-orange); opacity: 0.75; }
+    .terms-container input[type="checkbox"] { width: 18px; height: 18px; min-width: 18px; margin-top: 2px; accent-color: var(--primary-orange); cursor: pointer; }
+    .terms-container label { font-size: 0.75rem; color: #b8c9e0; line-height: 1.5; cursor: pointer; }
+    .terms-container label a { color: var(--primary-orange); text-decoration: underline; cursor: pointer; }
+    .terms-container label a:hover { color: var(--gold-glow); }
+    .terms-error { color: var(--danger); font-size: 0.7rem; text-align: center; margin-top: -6px; margin-bottom: 6px; display: none; }
+
+    .terms-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px); z-index: 30000; justify-content: center; align-items: center; padding: 20px; }
+    .terms-modal.active { display: flex; }
+    .terms-modal-content { background: #11161e; border: 2px solid var(--primary-orange); border-radius: 1.5rem; padding: 2rem; max-width: 520px; width: 100%; max-height: 80vh; overflow-y: auto; position: relative; }
+    .terms-modal-content h2 { color: var(--primary-orange); margin-bottom: 12px; font-size: 1.2rem; }
+    .terms-modal-content .close-terms { position: absolute; top: 12px; right: 16px; background: none; border: none; color: #8fa0b8; font-size: 1.4rem; cursor: pointer; }
+    .terms-modal-content .close-terms:hover { color: var(--text-bright); }
+    .terms-modal-content .terms-body { color: #b8c9e0; font-size: 0.85rem; line-height: 1.7; }
+    .terms-modal-content .terms-body p { margin-bottom: 10px; }
+    .terms-modal-content .btn-primary { margin-top: 14px; background: linear-gradient(95deg, var(--gradient-accent-1), var(--gradient-accent-2)); color: white; border: none; padding: 12px 20px; border-radius: 40px; width: 100%; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+
+    .section { background: var(--section-bg); backdrop-filter: blur(8px); border-radius: 1rem; padding: 1rem; margin: 0.8rem; border: 1px solid var(--border-color); transition: background 0.4s; }
+    .section-title { font-size: 1rem; margin-bottom: 0.8rem; color: var(--primary-orange); display: flex; align-items: center; gap: 0.5rem; }
+
+    .digit-flow { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.8rem 0; justify-content: center; }
+    .digit-cell { width: 45px; height: 45px; background: rgba(0, 166, 255, 0.1); border: 2px solid var(--primary-blue); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; font-weight: bold; color: var(--primary-blue); transition: all 0.3s; }
+    .digit-cell.newest { background: linear-gradient(145deg, var(--gradient-accent-1), var(--gradient-accent-2)); color: white; transform: scale(1.05); border-color: var(--gold-glow); }
+
+    .prediction-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.8rem; }
+    .pred-card { background: rgba(20, 20, 20, 0.95); border-radius: 0.8rem; padding: 0.7rem; border-top: 3px solid var(--primary-pink); text-align: center; }
+    .confidence-bar { height: 5px; background: #2a2a2a; border-radius: 10px; margin: 0.4rem 0; overflow: hidden; }
+    .confidence-fill { height: 100%; background: linear-gradient(90deg, var(--gradient-accent-1), var(--gold-glow)); width: 0%; border-radius: 10px; transition: width 0.4s ease; }
+
+    .status-dot { width: 10px; height: 10px; border-radius: 50%; background: #6b7280; display: inline-block; margin-left: 8px; }
+    .status-dot.active { background: var(--primary-orange); box-shadow: 0 0 8px var(--primary-orange); animation: blink 1s infinite; }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+    .btn-primary-dash, .btn-secondary, .btn-deepseek, .btn-danger, .btn-success { padding: 0.6rem 1.2rem; border-radius: 2rem; font-weight: bold; cursor: pointer; transition: all 0.3s ease; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px; justify-content: center; border: none; }
+    .btn-primary-dash { background: linear-gradient(95deg, var(--gradient-accent-1), var(--gradient-accent-2)); color: white; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); }
+    .btn-primary-dash:hover { transform: translateY(-2px); }
+    .btn-secondary { background: rgba(20, 20, 30, 0.95); border: 1px solid var(--primary-orange); color: var(--primary-orange); }
+    .btn-secondary:hover { background: rgba(255, 255, 255, 0.05); transform: translateY(-2px); }
+    .btn-deepseek { background: linear-gradient(95deg, #1a1a2a, #0d0d1a); border: 1px solid var(--deepseek-purple); color: var(--deepseek-purple); }
+    .btn-danger { background: linear-gradient(95deg, var(--danger), #cc2244); color: white; }
+    .btn-success { background: linear-gradient(95deg, var(--success), #00cc66); color: #0a0a0a; }
+    .btn-sm { padding: 0.35rem 0.8rem; font-size: 0.75rem; }
+    .btn-block { width: 100%; }
+    .button-group { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 0.8rem; align-items: center; }
+
+    .deepseek-page { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5, 5, 10, 0.96); backdrop-filter: blur(12px); z-index: 2000; overflow-y: auto; padding: 1rem; }
+    .deepseek-page.active { display: block; }
+
+    .dcircles-dashboard { background: linear-gradient(145deg, #0a0a0a, #0d0d12); border-radius: 1.2rem; padding: 1rem; margin-top: 1rem; border: 2px solid var(--primary-blue); }
+    .circles-container { display: flex; justify-content: center; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin: 1rem 0; }
+    .d-circle { position: relative; width: 65px; height: 65px; border-radius: 50%; background: linear-gradient(135deg, #1a1a2a, #0a0a15); display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s ease; border: 2px solid var(--primary-blue); box-shadow: 0 0 12px rgba(0, 166, 255, 0.3); }
+    .d-circle.active { border-color: var(--primary-orange); box-shadow: 0 0 20px var(--primary-orange); }
+    .d-circle.tick-up { border-color: var(--tick-up); box-shadow: 0 0 20px var(--tick-up); animation: tickFlash 0.3s ease-out; }
+    .d-circle.tick-down { border-color: var(--tick-down); box-shadow: 0 0 20px var(--tick-down); animation: tickFlash 0.3s ease-out; }
+    .d-circle.tick-neutral { border-color: var(--tick-neutral); box-shadow: 0 0 20px var(--tick-neutral); animation: tickFlash 0.3s ease-out; }
+    @keyframes tickFlash { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
+    .circle-digit { font-size: 1.8rem; font-weight: 800; background: linear-gradient(135deg, var(--gold-glow), var(--primary-pink)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .circle-label { font-size: 0.5rem; color: var(--text-dim); margin-top: 2px; }
+    .tick-indicator { position: absolute; top: -8px; right: -8px; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: bold; background: rgba(0, 0, 0, 0.85); border: 1px solid white; }
+    .tick-up .tick-indicator { background: var(--tick-up); color: black; }
+    .tick-down .tick-indicator { background: var(--tick-down); color: white; }
+    .tick-neutral .tick-indicator { background: var(--tick-neutral); color: black; }
+
+    .history-digit { width: 34px; height: 34px; background: rgba(0, 166, 255, 0.2); border: 1px solid var(--primary-blue); border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; margin: 0.15rem; font-size: 0.85rem; }
+    .history-digit.new-tick { background: var(--primary-orange); color: black; transform: scale(1.1); border-color: var(--gold-glow); animation: historyFlash 0.3s ease; }
+    @keyframes historyFlash { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1.1); } }
+
+    .analysis-progress { background: rgba(0, 0, 0, 0.7); border-radius: 0.8rem; padding: 0.8rem; margin: 0.8rem 0; border-left: 4px solid var(--deepseek-purple); }
+    .progress-steps { display: flex; justify-content: space-between; margin-bottom: 0.8rem; flex-wrap: wrap; gap: 0.3rem; }
+    .step { flex: 1; text-align: center; padding: 0.4rem; border-radius: 0.5rem; background: rgba(30, 30, 50, 0.6); font-size: 0.65rem; opacity: 0.5; transition: all 0.3s; min-width: 55px; }
+    .step.active { opacity: 1; background: linear-gradient(95deg, var(--gradient-accent-1), var(--gradient-accent-2)); color: white; box-shadow: 0 0 10px var(--primary-orange); }
+    .step.completed { opacity: 0.8; background: var(--success); color: black; }
+
+    .final-prediction-card { background: linear-gradient(135deg, #1a1a2a, #0d0d1a); border: 2px solid var(--gold-glow); border-radius: 1.2rem; padding: 1.2rem; text-align: center; margin-top: 1rem; }
+    .prediction-digit-large { font-size: 3.5rem; font-weight: 800; background: linear-gradient(135deg, var(--gold-glow), var(--primary-orange)); -webkit-background-clip: text; background-clip: text; color: transparent; transition: all 0.2s ease; }
+    .prediction-digit-large.updating { transform: scale(1.1); }
+
+    .auto-renew-badge, .live-badge { background: rgba(0, 255, 136, 0.2); border: 1px solid var(--success); border-radius: 20px; padding: 0.15rem 0.6rem; font-size: 0.6rem; color: var(--success); display: inline-flex; align-items: center; gap: 4px; }
+    .live-badge { background: rgba(255, 136, 0, 0.2); border-color: var(--primary-orange); color: var(--primary-orange); }
+
+    .tick-stream { font-family: monospace; font-size: 0.7rem; background: rgba(0, 0, 0, 0.5); padding: 0.3rem; border-radius: 0.5rem; text-align: center; }
+
+    .snackbar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--dark-gray); border: 1px solid var(--primary-pink); padding: 0.4rem 1.2rem; border-radius: 2rem; display: none; z-index: 1100; color: var(--primary-pink); font-weight: bold; font-size: 0.8rem; white-space: nowrap; }
+
+    .whatsapp-float { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; background: #25D366; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.6rem; z-index: 500; text-decoration: none; border: 2px solid white; transition: 0.2s; }
+    .whatsapp-float:hover { transform: scale(1.1); }
+
+    .theme-toast { position: fixed; top: 80px; right: 20px; background: var(--card-bg); border: 2px solid var(--primary-orange); border-radius: 12px; padding: 0.6rem 1rem; color: var(--text-bright); font-size: 0.8rem; font-weight: bold; z-index: 25000; opacity: 0; transform: translateX(30px); transition: all 0.4s ease; pointer-events: none; display: flex; align-items: center; gap: 8px; }
+    .theme-toast.show { opacity: 1; transform: translateX(0); }
+    .theme-toast i { color: var(--primary-orange); }
+
+    .conn-status { display: inline-flex; align-items: center; gap: 6px; font-size: 0.65rem; padding: 2px 10px; border-radius: 20px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.5); transition: 0.3s; }
+    .conn-status.connected { border-color: var(--success); color: var(--success); background: rgba(0, 255, 136, 0.1); }
+    .conn-status.disconnected { border-color: var(--danger); color: var(--danger); background: rgba(255, 51, 102, 0.1); }
+    .conn-status.connecting { border-color: var(--warning); color: var(--warning); background: rgba(255, 204, 0, 0.1); }
+    .conn-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; animation: blink 1.2s infinite; }
+    .conn-status.connected .conn-dot { animation: none; background: var(--success); }
+
+    @media (max-width: 640px) {
+      .d-circle { width: 52px; height: 52px; }
+      .circle-digit { font-size: 1.3rem; }
+      .digit-cell { width: 38px; height: 38px; font-size: 1rem; }
+      .step { font-size: 0.55rem; padding: 0.3rem; min-width: 45px; }
+      .btn-primary-dash, .btn-secondary, .btn-deepseek { padding: 0.4rem 0.8rem; font-size: 0.7rem; }
+      .prediction-digit-large { font-size: 2.5rem; }
+      .tick-indicator { width: 18px; height: 18px; font-size: 0.55rem; top: -6px; right: -6px; }
+      .login-wrapper { padding: 1rem; }
+      .terms-modal-content { padding: 1.2rem; }
+      .theme-panel { width: 240px; right: -10px; }
+      .theme-grid { grid-template-columns: repeat(4, 1fr); }
+      #debugPanel { font-size: 0.55rem; max-width: 240px; }
+    }
+  </style>
+</head>
+
+<body data-theme="orange">
+  <!-- DEBUG PANEL -->
+  <div id="debugPanel">
+    <div class="line" id="dbg1">🔌 Initializing...</div>
+    <div class="line" id="dbg2">—</div>
+    <div class="line" id="dbg3">—</div>
+    <div class="line" id="dbg4">—</div>
+  </div>
+
+  <div id="antiInspectOverlay" class="anti-inspect-overlay">
+    <div class="anti-inspect-box">
+      <i class="fas fa-shield-alt"></i>
+      <h2>Security Lock</h2>
+      <p>Developer tools restricted.</p>
+      <button id="reloadBtn" class="btn-primary-dash" style="margin-top:1rem;">Reload</button>
+    </div>
+  </div>
+
+  <canvas id="matrixCanvas"></canvas>
+  <div id="dollarRainContainer" class="dollar-rain-container"></div>
+  <a href="https://wa.me/254792876552?text=Hello%20DollarSketch%20Team" target="_blank" class="whatsapp-float"><i class="fab fa-whatsapp"></i></a>
+
+  <div id="themeToast" class="theme-toast">
+    <i class="fas fa-palette"></i>
+    <span id="themeToastText">Theme applied</span>
+  </div>
+
+  <div class="header">
+    <div class="logo">
+      <i class="fas fa-chart-line"></i>
+      <span>DollarSketch</span>
+      <span class="badge">ELITE + DEEPSEEK</span>
+      <span id="globalConnStatus" class="conn-status connecting"><span class="conn-dot"></span> Connecting...</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:0.6rem;">
+      <div class="price-tag"><i class="fas fa-tag"></i> $150</div>
+      <div class="theme-picker-wrapper">
+        <button class="theme-toggle-btn" id="themeToggleBtn" title="Change Theme">
+          <i class="fas fa-palette"></i>
+        </button>
+        <div class="theme-panel" id="themePanel">
+          <h4><i class="fas fa-swatchbook"></i> Choose Theme</h4>
+          <div class="theme-grid">
+            <div class="theme-swatch active" data-theme="orange" style="background: linear-gradient(135deg, #ff8800, #cc5500);">🍊</div>
+            <div class="theme-swatch" data-theme="emerald" style="background: linear-gradient(135deg, #00c97b, #008a54);">🌿</div>
+            <div class="theme-swatch" data-theme="royal" style="background: linear-gradient(135deg, #3d7bff, #2550cc);">💙</div>
+            <div class="theme-swatch" data-theme="crimson" style="background: linear-gradient(135deg, #ff4757, #c0392b);">❤️</div>
+            <div class="theme-swatch" data-theme="purple" style="background: linear-gradient(135deg, #a855f7, #7e22ce);">💜</div>
+            <div class="theme-swatch" data-theme="cyber" style="background: linear-gradient(135deg, #00e5ff, #0090b3);">⚡</div>
+            <div class="theme-swatch" data-theme="gold" style="background: linear-gradient(135deg, #ffd700, #b8860b);">👑</div>
+            <div class="theme-swatch" data-theme="mono" style="background: linear-gradient(135deg, #e0e0e0, #808080);">⚫</div>
+          </div>
+          <div class="custom-color-row">
+            <label><i class="fas fa-eye-dropper"></i> Custom color</label>
+            <input type="color" id="customColorPicker" value="#ff8800">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="termsModal" class="terms-modal">
+    <div class="terms-modal-content">
+      <button class="close-terms" id="closeTermsBtn"><i class="fas fa-times"></i></button>
+      <h2><i class="fas fa-file-contract"></i> Terms & Conditions</h2>
+      <div class="terms-body">
+        <p><strong>1. Acceptance of Terms</strong><br>By using DollarSketch Analysis Tool, you agree to these terms.</p>
+        <p><strong>2. License &amp; Use</strong><br>Single-user license for personal trading analysis only.</p>
+        <p><strong>3. Payment &amp; Access</strong><br>One-time $150 payment. Non-refundable once credentials sent.</p>
+        <p><strong>4. Risk Disclaimer</strong><br>Trading involves risk. No profit guarantee.</p>
+        <p><strong>5. Data &amp; Privacy</strong><br>We do not store trading data. Credentials verified locally.</p>
+        <p><strong>6. Prohibited Use</strong><br>No sharing credentials, reverse-engineering, or illegal use.</p>
+        <p><strong>7. Termination</strong><br>Access terminated if terms violated.</p>
+        <p style="margin-top:12px; color:var(--primary-orange);"><i class="fas fa-check-circle"></i> By checking the box you agree to these terms.</p>
+      </div>
+      <button class="btn-primary" id="acceptTermsBtn"><i class="fas fa-check"></i> I Accept</button>
+    </div>
+  </div>
+
+  <div id="loginSection" class="login-wrapper">
+    <div style="text-align:center; margin-bottom:12px;">
+      <i class="fas fa-chart-line" style="font-size:2rem;color:var(--primary-orange);"></i>
+      <h2 style="color:var(--primary-orange); font-size:1.2rem;">DollarSketch Access</h2>
+      <p style="color:var(--text-dim); font-size:0.75rem;">Secure Trading Platform</p>
+    </div>
+
+    <div class="payment-banner">
+      <div class="title"><i class="fas fa-bolt"></i> PAY FIRST – FULL ACCESS <span style="color:var(--primary-orange);">$150</span> ONE-TIME</div>
+      <div class="sub">Payment method updated · get instant access after payment</div>
+      <a href="https://wa.me/254792876552?text=I%20want%20DollarSketch%20access" target="_blank" class="whatsapp-btn">
+        <i class="fab fa-whatsapp"></i> Pay on WhatsApp
+      </a>
+    </div>
+
+    <div class="payment-details">
+      <div class="pd-item">
+        <i class="fas fa-coins"></i>
+        <span class="pd-label">TRC20</span>
+        <span class="pd-value">TMCcircqSYgEwFStnoNRuNoEF5nD2YVDTw</span>
+        <button class="copy-btn" onclick="copyToClipboard('TMCcircqSYgEwFStnoNRuNoEF5nD2YVDTw')"><i class="fas fa-copy"></i> Copy</button>
+      </div>
+      <div class="pd-item">
+        <i class="fab fa-bitcoin"></i>
+        <span class="pd-label">Binance ID</span>
+        <span class="pd-value">1166114914</span>
+        <button class="copy-btn" onclick="copyToClipboard('1166114914')"><i class="fas fa-copy"></i> Copy</button>
+      </div>
+      <div class="pd-item">
+        <i class="fas fa-mobile-alt"></i>
+        <span class="pd-label">M‑Pesa</span>
+        <span class="pd-value mpesa">0792876552</span>
+        <button class="copy-btn" onclick="copyToClipboard('0792876552')"><i class="fas fa-copy"></i> Copy</button>
+      </div>
+    </div>
+
+    <div class="payment-card" style="background:#131b26; border-radius:20px; padding:16px; border:1px solid #293542; text-align:center; margin-bottom:12px;">
+      <div class="price-label">ONE-TIME PAYMENT</div>
+      <div class="big-price">$150</div>
+      <div class="lifetime">Lifetime access · non-refundable once credentials are sent</div>
+      <div class="feature-list">
+        <div class="item"><i class="fas fa-check-circle"></i> unique log ins</div>
+        <div class="item"><i class="fas fa-check-circle"></i> The nexah mathes probot</div>
+        <div class="item"><i class="fas fa-check-circle"></i> Complete training & support</div>
+      </div>
+      <button id="showLoginBtn" class="btn-primary" style="margin-top:4px;">
+        <i class="fas fa-key"></i> Get access now
+      </button>
+      <button id="payWhatsappBtn" class="btn-outline">
+        <i class="fab fa-whatsapp"></i> Pay $150 on WhatsApp
+      </button>
+    </div>
+
+    <div id="loginFormContainer" style="display:none;">
+      <div style="font-weight:700; font-size:1rem; margin-bottom:4px; color:var(--text-bright);">
+        <i class="fas fa-user-astronaut"></i> Trader login
+      </div>
+      <div style="font-size:0.75rem; color:#8aa0b8; margin-bottom:12px;">Enter your private credentials</div>
+      <form id="loginForm">
+        <input type="text" id="loginUser" class="form-input" placeholder="Username / Email" autocomplete="off">
+        <input type="password" id="loginPass" class="form-input" placeholder="Password" autocomplete="off">
+        <div class="terms-container">
+          <input type="checkbox" id="termsCheckbox">
+          <label for="termsCheckbox">I have read and agree to the <a id="viewTermsLink">Terms & Conditions</a></label>
+        </div>
+        <div class="terms-error" id="termsError">Please accept the Terms & Conditions to continue.</div>
+        <button type="submit" class="btn-primary" id="loginSubmitBtn" style="width:100%;" disabled>
+          <i class="fas fa-sign-in-alt"></i> Access DollarSketch
+        </button>
+        <div id="loginMsg" class="login-error"></div>
+      </form>
+    </div>
+
+    <div class="social-icons">
+      <a href="https://wa.me/254792876552" target="_blank" class="social-icon"><i class="fab fa-whatsapp"></i></a>
+      <a href="https://t.me/Ddhackanalysistool" target="_blank" class="social-icon"><i class="fab fa-telegram"></i></a>
+      <a href="https://www.instagram.com/king_of_matches_no0.1" target="_blank" class="social-icon"><i class="fab fa-instagram"></i></a>
+    </div>
+  </div>
+
+  <div id="dashboard" style="display:none;">
+    <div class="section" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+      <div><h2 style="font-size:1.1rem;"><i class="fas fa-user-astronaut"></i> Welcome, <span id="userName">Trader</span></h2></div>
+      <button id="logoutBtn" class="btn-danger btn-sm"><i class="fas fa-sign-out-alt"></i> Exit</button>
+    </div>
+    <div class="section">
+      <div class="section-title"><i class="fas fa-chart-line"></i> Classic Analysis (Vol 100)</div>
+      <div class="button-group">
+        <button id="startBtn" class="btn-success btn-sm"><i class="fas fa-play"></i> Start</button>
+        <button id="stopBtn" class="btn-danger btn-sm"><i class="fas fa-stop"></i> Stop</button>
+        <div id="statusDot" class="status-dot"></div>
+        <span id="statusText" style="margin-left:5px; font-size:0.8rem;">Standby</span>
+        <span id="classicConnStatus" class="conn-status disconnected"><span class="conn-dot"></span> Offline</span>
+      </div>
+      <div style="margin-top: 0.8rem;">
+        <button id="deepseekRedirectBtn" class="btn-deepseek btn-block"><i class="fas fa-brain"></i> DeepSeek AI Analysis →</button>
+      </div>
+    </div>
+    <div id="classicPanel">
+      <div class="section">
+        <div class="section-title"><i class="fas fa-waveform"></i> Live Digit Flow</div>
+        <div id="digitFlow" class="digit-flow"></div>
+      </div>
+      <div class="section">
+        <div class="section-title"><i class="fas fa-crystal-ball"></i> Predictions</div>
+        <div id="predictions" class="prediction-grid"></div>
+      </div>
+      <div class="section">
+        <div class="section-title"><i class="fas fa-chart-column"></i> Frequency Distribution</div>
+        <canvas id="freqCanvas" style="height:140px;"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div id="deepseekPage" class="deepseek-page">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; margin-bottom:0.8rem;">
+      <div class="logo"><i class="fas fa-brain" style="color:var(--deepseek-purple);"></i><span>DeepSeek Quantum</span></div>
+      <div>
+        <span class="auto-renew-badge"><i class="fas fa-sync-alt"></i> Real-Time Ticks</span>
+        <button id="closeDeepseekPage" class="btn-secondary btn-sm" style="margin-left:8px;"><i class="fas fa-arrow-left"></i> Back</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="button-group">
+        <select id="volatilityMarketSelect" class="form-input" style="flex:1; background:rgba(26,26,26,0.9); border:1px solid var(--border-color); border-radius:0.75rem; color:white; padding:0.5rem;"></select>
+        <button id="refreshMarketDataBtn" class="btn-secondary btn-sm"><i class="fas fa-sync-alt"></i> Sync</button>
+        <button id="startFullAnalysisBtn" class="btn-primary-dash btn-sm"><i class="fas fa-play"></i> Analyze</button>
+        <span id="deepseekConnStatus" class="conn-status disconnected"><span class="conn-dot"></span> Offline</span>
+      </div>
+    </div>
+
+    <div class="analysis-progress">
+      <h4 style="font-size:0.9rem;"><i class="fas fa-chart-line"></i> Analysis Status</h4>
+      <div class="progress-steps">
+        <div class="step" id="step1">📊 Data</div>
+        <div class="step" id="step2">🔄 Pattern</div>
+        <div class="step" id="step3">🧠 Neural</div>
+        <div class="step" id="step4">🎯 Calibrate</div>
+        <div class="step" id="step5">✨ Finalize</div>
+      </div>
+      <div id="progressMessage" style="margin-top: 0.3rem; color: var(--primary-orange); font-size:0.75rem;">⚡ Real-time tick indicators active</div>
+    </div>
+
+    <div class="dcircles-dashboard">
+      <div style="display:flex; justify-content:space-between; flex-wrap:wrap; margin-bottom:0.5rem;">
+        <div style="font-size:0.8rem;"><i class="fas fa-chart-pie"></i> <strong>D-Circles Live</strong> | <span id="dcMarketName">Vol 75</span></div>
+        <div><span class="live-badge"><i class="fas fa-bolt"></i> REAL-TIME TICKS</span></div>
+      </div>
+      <div class="circles-container" id="circlesContainerDigits"></div>
+      <div id="tickStream" class="tick-stream" style="margin-top: 0.5rem;">
+        <i class="fas fa-chart-line"></i> Waiting for ticks...
+      </div>
+      <div style="text-align: center; font-size: 0.6rem; margin-top: 0.5rem;">
+        <span style="color: var(--tick-up);">▲ Up Tick</span> |
+        <span style="color: var(--tick-down);">▼ Down Tick</span> |
+        <span style="color: var(--tick-neutral);">● Neutral Tick</span>
+      </div>
+    </div>
+
+    <div id="finalPredictionCard" class="final-prediction-card">
+      <i class="fas fa-crown" style="font-size: 1.5rem; color: var(--gold-glow);"></i>
+      <h3 style="font-size:1rem;">Live Prediction</h3>
+      <div class="prediction-digit-large" id="finalPredictionDigit">—</div>
+      <div class="confidence-bar"><div id="finalConfidenceFill" class="confidence-fill"></div></div>
+      <div id="finalConfidenceText" style="font-size: 0.9rem; font-weight: bold;">Confidence: 0%</div>
+      <div id="liveUpdateStatus" style="margin-top: 0.3rem; font-size: 0.7rem; color: var(--success);"></div>
+      <button id="rerunAnalysisBtn" class="btn-secondary btn-sm" style="margin-top: 0.6rem;"><i class="fas fa-chart-line"></i> Run Analysis</button>
+    </div>
+
+    <div style="background:rgba(13,13,13,0.95);border-radius:0.8rem;padding:0.8rem;margin:0.8rem 0;">
+      <h4 style="color:var(--primary-orange); font-size:0.85rem;"><i class="fas fa-chart-column"></i> Stats: <span id="marketStatsDetail">-</span></h4>
+      <div id="selectedDigitHistory" style="display:flex; flex-wrap:wrap; margin-top:0.3rem;"></div>
+      <div style="margin-top:0.5rem;"><canvas id="marketFreqCanvas" style="height:120px;"></canvas></div>
+    </div>
+    <div id="snackbar" class="snackbar"></div>
+  </div>
+
+  <script>
+    // =====================================================================
+    // DERIV WEBSOCKET — OPTIONS API (v1) PUBLIC ENDPOINT
+    // =====================================================================
+    const DERIV_WS_URL = 'wss://api.derivws.com/trading/v1/options/ws/public';
+
+    // ================== DEBUG PANEL ==================
+    const dbgLines = ['', '', '', ''];
+    function dbg(msg, type) {
+      const time = new Date().toLocaleTimeString();
+      const icon = type === 'err' ? '❌' : type === 'warn' ? '⚠️' : '✅';
+      dbgLines.unshift(icon + ' ' + time + ' ' + msg);
+      if (dbgLines.length > 4) dbgLines.pop();
+      for (let i = 0; i < 4; i++) {
+        const el = document.getElementById('dbg' + (i + 1));
+        if (el) {
+          el.textContent = dbgLines[i] || '—';
+          el.className = 'line';
+          if (dbgLines[i] && dbgLines[i].indexOf('❌') === 0) el.classList.add('err');
+          else if (dbgLines[i] && dbgLines[i].indexOf('⚠️') === 0) el.classList.add('warn');
+          else if (dbgLines[i]) el.classList.add('ok');
+        }
+      }
+      if (type === 'err') console.error(msg);
+      else if (type === 'warn') console.warn(msg);
+      else console.log(msg);
+    }
+
+    // ================== GLOBAL STATE ==================
+    const state = {
+      ws: null,
+      wsConnected: false,
+      wsConnecting: false,
+      subscribedSymbols: new Set(),
+      reconnectAttempts: 0,
+      reconnectTimer: null,
+      keepAliveTimer: null,
+      classicDigits: [],
+      deepseekDigits: [],
+      deepseekSymbol: 'R_75',
+      deepseekPrediction: 5,
+      deepseekConfidence: 65,
+      deepseekTickCount: 0,
+      lastDigitBySymbol: {},
+      classicChart: null,
+      deepseekChart: null,
+      isAnalyzing: false,
+      termsAccepted: false,
+      currentUser: null,
+      _tickStreamHistory: [],
+      tickCounter: 0,
+      reqIdCounter: 1
+    };
+
+    const CLASSIC_SYMBOL = 'R_100';
+    const CLASSIC_MAX = 20;
+    const DEEPSEEK_MAX = 25;
+
+    const volatilityMarkets = [
+      { symbol: "R_10", name: "Vol 10" },
+      { symbol: "R_25", name: "Vol 25" },
+      { symbol: "R_50", name: "Vol 50" },
+      { symbol: "R_75", name: "Vol 75" },
+      { symbol: "R_100", name: "Vol 100" },
+      { symbol: "1HZ10V", name: "V10 1s" },
+      { symbol: "1HZ25V", name: "V25 1s" },
+      { symbol: "1HZ50V", name: "V50 1s" },
+      { symbol: "1HZ75V", name: "V75 1s" },
+      { symbol: "1HZ100V", name: "V100 1s" }
+    ];
+
+    // ================== CONNECTION STATUS UI ==================
+    function setConnStatus(status) {
+      const els = [
+        document.getElementById('globalConnStatus'),
+        document.getElementById('classicConnStatus'),
+        document.getElementById('deepseekConnStatus')
+      ];
+      els.forEach(function (el) {
+        if (!el) return;
+        el.className = 'conn-status ' + status;
+        const txt = status === 'connected' ? 'Live' : (status === 'connecting' ? 'Connecting...' : 'Offline');
+        el.innerHTML = '<span class="conn-dot"></span> ' + txt;
+      });
+    }
+
+    // ================== WEBSOCKET ==================
+    function connectDeriv() {
+      if (state.wsConnected || state.wsConnecting) return;
+      state.wsConnecting = true;
+      setConnStatus('connecting');
+      dbg('Opening WebSocket...', 'ok');
+
+      try {
+        state.ws = new WebSocket(DERIV_WS_URL);
+      } catch (e) {
+        state.wsConnecting = false;
+        setConnStatus('disconnected');
+        dbg('Failed to create WS: ' + e.message, 'err');
+        scheduleReconnect();
+        return;
+      }
+
+      state.ws.onopen = function () {
+        state.wsConnected = true;
+        state.wsConnecting = false;
+        state.reconnectAttempts = 0;
+        setConnStatus('connected');
+        dbg('WS Connected ✓', 'ok');
+        startKeepAlive();
+
+        const syms = Array.from(state.subscribedSymbols);
+        if (syms.length === 0) {
+          dbg('No symbols queued yet', 'warn');
+        } else {
+          syms.forEach(function (sym) {
+            const msg = JSON.stringify({ ticks: sym, subscribe: 1, req_id: state.reqIdCounter++ });
+            try {
+              state.ws.send(msg);
+              dbg('Sub sent: ' + sym, 'ok');
+            } catch (e) {
+              dbg('Sub failed: ' + sym, 'err');
+            }
+          });
+        }
+      };
+
+      state.ws.onmessage = function (event) {
+        let data;
+        try { data = JSON.parse(event.data); } catch (e) { return; }
+
+        if (data.msg_type === 'tick' && data.tick) {
+          state.tickCounter++;
+          if (state.tickCounter <= 3) {
+            dbg('TICK #' + state.tickCounter + ' ' + (data.tick.symbol || data.tick.underlying_symbol) + ' ' + data.tick.quote, 'ok');
+          }
+          handleTick(data.tick);
+        } else if (data.error) {
+          dbg('Deriv err: ' + (data.error.message || JSON.stringify(data.error)), 'err');
+        } else if (data.msg_type && state.tickCounter === 0) {
+          dbg('Msg: ' + data.msg_type, 'warn');
+        }
+      };
+
+      state.ws.onerror = function (err) {
+        state.wsConnecting = false;
+        dbg('WS Error — check network/firewall', 'err');
+      };
+
+      state.ws.onclose = function (event) {
+        state.wsConnected = false;
+        state.wsConnecting = false;
+        stopKeepAlive();
+        setConnStatus('disconnected');
+        dbg('WS Closed code=' + event.code, 'warn');
+        scheduleReconnect();
+      };
+    }
+
+    function scheduleReconnect() {
+      if (state.reconnectTimer) clearTimeout(state.reconnectTimer);
+      state.reconnectAttempts++;
+      const delay = Math.min(10000, 1500 * state.reconnectAttempts);
+      dbg('Reconnect in ' + (delay/1000) + 's (try ' + state.reconnectAttempts + ')', 'warn');
+      state.reconnectTimer = setTimeout(function () {
+        state.reconnectTimer = null;
+        connectDeriv();
+      }, delay);
+    }
+
+    function startKeepAlive() {
+      stopKeepAlive();
+      state.keepAliveTimer = setInterval(function () {
+        if (state.wsConnected && state.ws && state.ws.readyState === WebSocket.OPEN) {
+          try { state.ws.send(JSON.stringify({ ping: 1, req_id: state.reqIdCounter++ })); } catch (e) {}
+        }
+      }, 25000);
+    }
+
+    function stopKeepAlive() {
+      if (state.keepAliveTimer) {
+        clearInterval(state.keepAliveTimer);
+        state.keepAliveTimer = null;
+      }
+    }
+
+    function subscribeSymbol(symbol) {
+      state.subscribedSymbols.add(symbol);
+      if (!state.wsConnected || !state.ws || state.ws.readyState !== WebSocket.OPEN) {
+        dbg('Queued sub: ' + symbol, 'warn');
+        if (!state.wsConnecting && !state.wsConnected) connectDeriv();
+        return;
+      }
+      try {
+        state.ws.send(JSON.stringify({ ticks: symbol, subscribe: 1, req_id: state.reqIdCounter++ }));
+        dbg('Sub sent: ' + symbol, 'ok');
+      } catch (e) {
+        dbg('Sub send failed: ' + symbol, 'err');
+      }
+    }
+
+    function unsubscribeSymbol(symbol) {
+      state.subscribedSymbols.delete(symbol);
+      if (state.wsConnected && state.ws && state.ws.readyState === WebSocket.OPEN) {
+        try {
+          state.ws.send(JSON.stringify({ forget: symbol, req_id: state.reqIdCounter++ }));
+          dbg('Unsub: ' + symbol, 'warn');
+        } catch (e) {}
+      }
+    }
+
+    // ================== TICK HANDLER ==================
+    function handleTick(tick) {
+      const symbol = tick.symbol || tick.underlying_symbol;
+      const quote = parseFloat(tick.quote);
+      if (isNaN(quote)) return;
+
+      const quoteStr = quote.toString();
+      const lastDigit = parseInt(quoteStr.charAt(quoteStr.length - 1), 10);
+      if (isNaN(lastDigit)) return;
+
+      if (symbol === CLASSIC_SYMBOL) {
+        state.classicDigits.unshift(lastDigit);
+        if (state.classicDigits.length > CLASSIC_MAX) state.classicDigits.pop();
+        updateClassicUI();
+      }
+
+      if (symbol === state.deepseekSymbol) {
+        state.deepseekDigits.unshift(lastDigit);
+        if (state.deepseekDigits.length > DEEPSEEK_MAX) state.deepseekDigits.pop();
+        state.deepseekTickCount++;
+
+        recalcDeepseekPrediction();
+        updateDCircles(lastDigit);
+        updateTickStream(lastDigit, symbol);
+        updateLivePredictionCard();
+
+        state.lastDigitBySymbol[symbol] = lastDigit;
+      }
+    }
+
+    // ================== DIGIT UTILITIES ==================
+    function computeDigitProbabilities(digits) {
+      const freq = Array(10).fill(0);
+      digits.forEach(function (d) { freq[d]++; });
+      const total = digits.length || 1;
+      return freq.map(function (f) { return (f / total) * 100; });
+    }
+
+    function determineTickDirection(newDigit, oldDigit) {
+      if (oldDigit === null || oldDigit === undefined) return 'neutral';
+      if (newDigit > oldDigit) return 'up';
+      if (newDigit < oldDigit) return 'down';
+      return 'neutral';
+    }
+
+    // ================== CLASSIC UI ==================
+    function updateClassicUI() {
+      const flowDiv = document.getElementById('digitFlow');
+      if (!flowDiv) return;
+      flowDiv.innerHTML = state.classicDigits.map(function (d, i) {
+        return '<div class="digit-cell ' + (i === 0 ? 'newest' : '') + '">' + d + '</div>';
+      }).join('');
+
+      const freq = Array(10).fill(0);
+      state.classicDigits.forEach(function (d) { freq[d]++; });
+      const lastDigitVal = state.classicDigits[0] || 5;
+      const topDigit = freq.indexOf(Math.max.apply(null, freq));
+
+      const predictions = [
+        { name: "SketchRoyal", digit: topDigit !== -1 ? topDigit : lastDigitVal, conf: 70 + Math.floor(Math.random() * 25) },
+        { name: "DollarEdge", digit: lastDigitVal, conf: 72 + Math.random() * 22 },
+        { name: "LightningML", digit: (lastDigitVal + 1) % 10, conf: 75 + Math.random() * 18 },
+        { name: "EnsembleAI", digit: (topDigit + lastDigitVal) % 10, conf: 78 + Math.random() * 15 }
+      ];
+
+      const predEl = document.getElementById('predictions');
+      if (predEl) {
+        predEl.innerHTML = predictions.map(function (p) {
+          return '<div class="pred-card"><h4 style="font-size:0.85rem;">' + p.name + '</h4><div style="font-size:1.5rem;color:var(--primary-orange);">' + p.digit + '</div><div class="confidence-bar"><div class="confidence-fill" style="width:' + p.conf + '%;"></div></div><div style="font-size:0.7rem;">' + Math.round(p.conf) + '%</div></div>';
+        }).join('');
+      }
+
+      if (state.classicChart) {
+        state.classicChart.data.datasets[0].data = freq;
+        const color = getComputedStyle(document.body).getPropertyValue('--primary-orange').trim() || '#ff8800';
+        state.classicChart.data.datasets[0].backgroundColor = color;
+        state.classicChart.update('none');
+      }
+    }
+
+    // ================== DEEPSEEK UI ==================
+    function recalcDeepseekPrediction() {
+      if (state.deepseekDigits.length === 0) return;
+      const freq = Array(10).fill(0);
+      state.deepseekDigits.forEach(function (d) { freq[d]++; });
+      const maxFreq = Math.max.apply(null, freq);
+      let topDigit = freq.indexOf(maxFreq);
+      if (topDigit === -1) topDigit = state.deepseekDigits[0];
+
+      state.deepseekPrediction = topDigit;
+      const freqStrength = (maxFreq / state.deepseekDigits.length) * 100;
+      state.deepseekConfidence = Math.min(98, Math.round(45 + freqStrength * 0.55 + (state.deepseekDigits.length >= 15 ? 8 : 0)));
+    }
+
+    function updateTickStream(digit, symbol) {
+      const prevDigit = state.lastDigitBySymbol[symbol];
+      const dir = determineTickDirection(digit, prevDigit);
+      const arrow = dir === 'up' ? '▲' : (dir === 'down' ? '▼' : '●');
+
+      state._tickStreamHistory.unshift({ arrow: arrow, digit: digit, dir: dir });
+      if (state._tickStreamHistory.length > 12) state._tickStreamHistory.pop();
+
+      const tickStreamEl = document.getElementById('tickStream');
+      if (!tickStreamEl) return;
+
+      const html = state._tickStreamHistory.map(function (t) {
+        const c = t.dir === 'up' ? 'var(--tick-up)' : (t.dir === 'down' ? 'var(--tick-down)' : 'var(--tick-neutral)');
+        return '<span style="color:' + c + '; margin:0 2px;">' + t.arrow + t.digit + '</span>';
+      }).join(' → ');
+
+      tickStreamEl.innerHTML = '<i class="fas fa-waveform"></i> ' + html + ' <span style="color:#888;">| real-time</span>';
+    }
+
+    function updateDCircles(currentDigit) {
+      if (!state.deepseekDigits.length) return;
+      const probs = computeDigitProbabilities(state.deepseekDigits);
+      const container = document.getElementById('circlesContainerDigits');
+      if (!container) return;
+
+      const prevDigit = state.lastDigitBySymbol[state.deepseekSymbol];
+      const tickDirection = determineTickDirection(currentDigit, prevDigit);
+      state.lastDigitBySymbol[state.deepseekSymbol] = currentDigit;
+
+      let html = '';
+      for (let digit = 0; digit <= 9; digit++) {
+        const confidence = Math.round(probs[digit] || 0);
+        const isTop = (digit === state.deepseekPrediction);
+        const isLatest = (digit === currentDigit);
+        let tickClass = '';
+        let tickIcon = '';
+
+        if (isLatest) {
+          if (tickDirection === 'up') { tickClass = 'tick-up'; tickIcon = '▲'; }
+          else if (tickDirection === 'down') { tickClass = 'tick-down'; tickIcon = '▼'; }
+          else { tickClass = 'tick-neutral'; tickIcon = '●'; }
+        }
+
+        html += '<div class="d-circle ' + tickClass + ' ' + (isTop ? 'active' : '') + '">' +
+          '<div class="circle-digit">' + digit + '</div>' +
+          '<div class="circle-label">' + confidence + '%</div>' +
+          (isLatest ? '<div class="tick-indicator">' + tickIcon + '</div>' : '') +
+          '</div>';
+      }
+      container.innerHTML = html;
+
+      const marketNameEl = document.getElementById('dcMarketName');
+      const mkt = volatilityMarkets.find(function (m) { return m.symbol === state.deepseekSymbol; });
+      if (marketNameEl) marketNameEl.textContent = mkt ? mkt.name : state.deepseekSymbol;
+
+      const statsEl = document.getElementById('marketStatsDetail');
+      if (statsEl) {
+        statsEl.textContent = 'Top:' + state.deepseekPrediction + ' | ' + state.deepseekConfidence + '% | Last:' + currentDigit + ' ' + (tickDirection === 'up' ? '▲' : tickDirection === 'down' ? '▼' : '●') + ' | Ticks:' + state.deepseekTickCount;
+      }
+
+      const historyHtml = state.deepseekDigits.slice(0, 16).map(function (d, idx) {
+        return '<div class="history-digit ' + (idx === 0 ? 'new-tick' : '') + '">' + d + '</div>';
+      }).join('');
+      const historyEl = document.getElementById('selectedDigitHistory');
+      if (historyEl) historyEl.innerHTML = historyHtml;
+
+      const freq = Array(10).fill(0);
+      state.deepseekDigits.forEach(function (d) { freq[d]++; });
+      if (state.deepseekChart) {
+        state.deepseekChart.data.datasets[0].data = freq;
+        const color = getComputedStyle(document.body).getPropertyValue('--primary-orange').trim() || '#ff8800';
+        state.deepseekChart.data.datasets[0].backgroundColor = color;
+        state.deepseekChart.update('none');
+      }
+
+      setTimeout(function () {
+        document.querySelectorAll('.d-circle').forEach(function (c) {
+          c.classList.remove('tick-up', 'tick-down', 'tick-neutral');
+        });
+      }, 400);
+    }
+
+    function updateLivePredictionCard() {
+      const digitEl = document.getElementById('finalPredictionDigit');
+      if (!digitEl) return;
+      digitEl.classList.add('updating');
+      setTimeout(function () { digitEl.classList.remove('updating'); }, 200);
+      digitEl.textContent = state.deepseekPrediction;
+
+      const fillEl = document.getElementById('finalConfidenceFill');
+      const textEl = document.getElementById('finalConfidenceText');
+      if (fillEl) fillEl.style.width = state.deepseekConfidence + '%';
+      if (textEl) textEl.textContent = 'Confidence: ' + state.deepseekConfidence + '%';
+
+      const statusEl = document.getElementById('liveUpdateStatus');
+      if (statusEl) {
+        statusEl.innerHTML = '<i class="fas fa-check-circle"></i> Live: Digit ' + state.deepseekPrediction + ' | ' + new Date().toLocaleTimeString();
+      }
+    }
+
+    // ================== ANALYSIS ANIMATION ==================
+    function startDeepAnalysis() {
+      if (state.isAnalyzing) { showSnackbar("Analysis in progress..."); return; }
+      if (!state.deepseekDigits.length) { showSnackbar("Waiting for live ticks..."); return; }
+
+      state.isAnalyzing = true;
+      const progressMsg = document.getElementById('progressMessage');
+      const steps = ['step1', 'step2', 'step3', 'step4', 'step5'];
+      steps.forEach(function (id) {
+        const el = document.getElementById(id);
+        el.classList.remove('active', 'completed');
+        el.style.opacity = '0.5';
+      });
+      progressMsg.textContent = "⏳ Analyzing real-time tick patterns...";
+
+      const stepDetails = [
+        "Collecting real-time tick data from D-Circles...",
+        "Analyzing tick direction patterns and volatility...",
+        "DeepSeek neural network processing tick sequences...",
+        "Calculating confidence based on tick momentum...",
+        "Finalizing prediction output..."
+      ];
+      let stepIndex = 0;
+
+      function executeStep() {
+        if (stepIndex >= steps.length) {
+          progressMsg.textContent = '✅ Analysis Ready - Prediction: Digit ' + state.deepseekPrediction + ' with ' + state.deepseekConfidence + '% confidence';
+          showSnackbar('Analysis Ready! Prediction: ' + state.deepseekPrediction + ' (' + state.deepseekConfidence + '%)');
+          triggerDollarRain();
+          state.isAnalyzing = false;
+          return;
+        }
+        const el = document.getElementById(steps[stepIndex]);
+        el.classList.add('active');
+        el.style.opacity = '1';
+        progressMsg.textContent = '⏳ ' + stepDetails[stepIndex];
+        setTimeout(function () {
+          el.classList.remove('active');
+          el.classList.add('completed');
+          el.style.opacity = '0.8';
+          stepIndex++;
+          executeStep();
+        }, 1200);
+      }
+      executeStep();
+    }
+
+    // ================== LOGIN ==================
+    const VALID_CREDENTIALS = [
+      { user: "ian", pass: "nexah123", display: "⚡ moji Elite Trader" },
+      { user: "Brashow", pass: "BKFK6346", display: "💹 Pro Trader" },
+      { user: "masvingisebryan@gmail.com", pass: "benZ@2027", display: "🆓 Trader saurce" }
+    ];
+
+    function login(username, password) {
+      if (!state.termsAccepted) {
+        document.getElementById('termsError').style.display = 'block';
+        return false;
+      }
+      const matched = VALID_CREDENTIALS.find(function (c) {
+        return c.user.toLowerCase() === username.toLowerCase() && c.pass === password;
+      });
+      if (matched) {
+        state.currentUser = { username: username, displayName: matched.display };
+        triggerDollarRain();
+        document.getElementById('dashboard').style.display = 'block';
+        document.getElementById('loginSection').style.display = 'none';
+        document.getElementById('userName').textContent = matched.display;
+
+        subscribeSymbol(CLASSIC_SYMBOL);
+        var dot = document.getElementById('statusDot');
+        if (dot) dot.classList.add('active');
+        document.getElementById('statusText').textContent = 'LIVE';
+        return true;
+      }
+      return false;
+    }
+
+    // ================== UI HELPERS ==================
+    function showSnackbar(msg) {
+      const sb = document.getElementById('snackbar');
+      if (!sb) return;
+      sb.textContent = msg;
+      sb.style.display = 'block';
+      setTimeout(function () { sb.style.display = 'none'; }, 2500);
+    }
+
+    function copyToClipboard(text) {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(function () {
+          showSnackbar('✅ Copied: ' + text);
+        }).catch(function () { fallbackCopy(text); });
+      } else {
+        fallbackCopy(text);
+      }
+    }
+
+    function fallbackCopy(text) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); showSnackbar('✅ Copied: ' + text); } catch (e) { showSnackbar('❌ Copy failed'); }
+      document.body.removeChild(ta);
+    }
+
+
+    function triggerDollarRain() {
+      const c = document.getElementById('dollarRainContainer');
+      if (!c) return;
+      for (let i = 0; i < 30; i++) {
+        const d = document.createElement('div');
+        d.className = 'dollar';
+        d.textContent = '💵';
+        d.style.left = Math.random() * 100 + '%';
+        d.style.animationDuration = (Math.random() * 1.5 + 1) + 's';
+        c.appendChild(d);
+        setTimeout(function () { d.remove(); }, 2500);
+      }
+    }
+
+    function showThemeToast(text) {
+      const toast = document.getElementById('themeToast');
+      const toastText = document.getElementById('themeToastText');
+      if (!toast) return;
+      toastText.textContent = text;
+      toast.classList.add('show');
+      clearTimeout(toast._timer);
+      toast._timer = setTimeout(function () { toast.classList.remove('show'); }, 1800);
+    }
+
+    // ================== THEME ==================
+    const THEME_KEY = 'dollarsketch-theme';
+
+    function applyTheme(themeName) {
+      document.body.setAttribute('data-theme', themeName);
+      document.querySelectorAll('.theme-swatch').forEach(function (s) {
+        s.classList.toggle('active', s.dataset.theme === themeName);
+      });
+      try { localStorage.setItem(THEME_KEY, themeName); } catch (e) {}
+      showThemeToast('Theme applied: ' + themeName);
+      const color = getComputedStyle(document.body).getPropertyValue('--primary-orange').trim() || '#ff8800';
+      if (state.classicChart) { state.classicChart.data.datasets[0].backgroundColor = color; state.classicChart.update('none'); }
+      if (state.deepseekChart) { state.deepseekChart.data.datasets[0].backgroundColor = color; state.deepseekChart.update('none'); }
+    }
+
+    function loadSavedTheme() {
+      let saved = 'orange';
+      try { saved = localStorage.getItem(THEME_KEY) || 'orange'; } catch (e) {}
+      if (['orange','emerald','royal','crimson','purple','cyber','gold','mono'].indexOf(saved) === -1) saved = 'orange';
+      applyTheme(saved);
+    }
+
+    // ================== MATRIX CANVAS ==================
+    const canvasM = document.getElementById('matrixCanvas');
+    const ctxM = canvasM.getContext('2d');
+    let fontSizeM = 12, columns, dropsM;
+
+    function getMatrixColors() {
+      const cs = getComputedStyle(document.body);
+      return [
+        cs.getPropertyValue('--primary-blue').trim() || '#00a6ff',
+        cs.getPropertyValue('--primary-orange').trim() || '#ff8800',
+        cs.getPropertyValue('--primary-pink').trim() || '#ff3b6f'
+      ];
+    }
+
+    function resizeCanvasM() {
+      canvasM.width = window.innerWidth;
+      canvasM.height = window.innerHeight;
+      columns = Math.floor(canvasM.width / fontSizeM);
+      dropsM = Array(columns).fill(0).map(function () { return Math.random() * -100; });
+    }
+
+    function drawMatrix() {
+      ctxM.fillStyle = 'rgba(0,0,0,0.05)';
+      ctxM.fillRect(0, 0, canvasM.width, canvasM.height);
+      const colors = getMatrixColors();
+      for (let i = 0; i < dropsM.length; i++) {
+        const char = String.fromCharCode(0x30A0 + Math.random() * 96);
+        const x = i * fontSizeM;
+        const y = dropsM[i] * fontSizeM;
+        ctxM.fillStyle = colors[Math.floor(Math.random() * colors.length)];
+        ctxM.font = fontSizeM + 'px monospace';
+        if (y > 0 && y < canvasM.height) ctxM.fillText(char, x, y);
+        if (dropsM[i] * fontSizeM > canvasM.height && Math.random() > 0.975) dropsM[i] = 0;
+        dropsM[i]++;
+      }
+    }
+
+    // ================== INITIALIZATION ==================
+    document.addEventListener('DOMContentLoaded', function () {
+
+      document.getElementById('themeToggleBtn').addEventListener('click', function (e) {
+        e.stopPropagation();
+        document.getElementById('themePanel').classList.toggle('active');
+      });
+
+      document.querySelectorAll('.theme-swatch').forEach(function (swatch) {
+        swatch.addEventListener('click', function () {
+          applyTheme(swatch.dataset.theme);
+          document.getElementById('themePanel').classList.remove('active');
+        });
+      });
+
+      document.addEventListener('click', function (e) {
+        const panel = document.getElementById('themePanel');
+        const btn = document.getElementById('themeToggleBtn');
+        if (panel && btn && !panel.contains(e.target) && !btn.contains(e.target)) {
+          panel.classList.remove('active');
+        }
+      });
+
+      var reloadBtn = document.getElementById('reloadBtn');
+      if (reloadBtn) reloadBtn.addEventListener('click', function () { location.reload(); });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['I','C','J'].indexOf(e.key) !== -1)) {
+          e.preventDefault();
+          var ov = document.getElementById('antiInspectOverlay');
+          if (ov) ov.classList.add('active');
+        }
+      });
+      document.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+
+      document.getElementById('viewTermsLink').addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById('termsModal').classList.add('active');
+      });
+      document.getElementById('closeTermsBtn').addEventListener('click', function () {
+        document.getElementById('termsModal').classList.remove('active');
+      });
+      document.getElementById('acceptTermsBtn').addEventListener('click', function () {
+        state.termsAccepted = true;
+        document.getElementById('termsCheckbox').checked = true;
+        document.getElementById('termsModal').classList.remove('active');
+        document.getElementById('loginSubmitBtn').disabled = false;
+        document.getElementById('termsError').style.display = 'none';
+      });
+      document.getElementById('termsCheckbox').addEventListener('change', function () {
+        state.termsAccepted = this.checked;
+        document.getElementById('loginSubmitBtn').disabled = !this.checked;
+        document.getElementById('termsError').style.display = this.checked ? 'none' : 'block';
+      });
+
+      document.getElementById('showLoginBtn').addEventListener('click', function () {
+        const c = document.getElementById('loginFormContainer');
+        c.style.display = c.style.display === 'none' ? 'block' : 'none';
+        if (c.style.display === 'block') {
+          c.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      });
+
+      document.getElementById('payWhatsappBtn').addEventListener('click', function () {
+        window.open('https://wa.me/254792876552?text=I%20want%20to%20pay%20%24150%20for%20DollarSketch%20access', '_blank');
+      });
+
+      document.getElementById('loginForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const u = document.getElementById('loginUser').value.trim();
+        const p = document.getElementById('loginPass').value;
+        if (!state.termsAccepted) {
+          document.getElementById('termsError').style.display = 'block';
+          return;
+        }
+        if (login(u, p)) {
+          document.getElementById('loginMsg').textContent = '';
+        } else {
+          document.getElementById('loginMsg').textContent = 'Invalid credentials';
+        }
+      });
+
+      document.getElementById('logoutBtn').addEventListener('click', function () {
+        state.currentUser = null;
+        unsubscribeSymbol(CLASSIC_SYMBOL);
+        document.getElementById('dashboard').style.display = 'none';
+        document.getElementById('loginSection').style.display = 'block';
+        document.getElementById('loginUser').value = '';
+        document.getElementById('loginPass').value = '';
+        document.getElementById('loginFormContainer').style.display = 'none';
+        document.getElementById('termsCheckbox').checked = false;
+        state.termsAccepted = false;
+        document.getElementById('loginSubmitBtn').disabled = true;
+        var dot = document.getElementById('statusDot');
+        if (dot) dot.classList.remove('active');
+        document.getElementById('statusText').textContent = 'Standby';
+      });
+
+      document.getElementById('startBtn').addEventListener('click', function () {
+        subscribeSymbol(CLASSIC_SYMBOL);
+        var dot = document.getElementById('statusDot');
+        if (dot) dot.classList.add('active');
+        document.getElementById('statusText').textContent = 'LIVE';
+        showSnackbar('Live feed active');
+      });
+      document.getElementById('stopBtn').addEventListener('click', function () {
+        unsubscribeSymbol(CLASSIC_SYMBOL);
+        var dot = document.getElementById('statusDot');
+        if (dot) dot.classList.remove('active');
+        document.getElementById('statusText').textContent = 'Standby';
+      });
+
+      document.getElementById('deepseekRedirectBtn').addEventListener('click', function () {
+        document.getElementById('deepseekPage').classList.add('active');
+        document.getElementById('dashboard').style.display = 'none';
+
+        const select = document.getElementById('volatilityMarketSelect');
+        select.innerHTML = '';
+        volatilityMarkets.forEach(function (m) {
+          const opt = document.createElement('option');
+          opt.value = m.symbol;
+          opt.textContent = m.name;
+          select.appendChild(opt);
+        });
+        select.value = state.deepseekSymbol;
+
+        subscribeSymbol(state.deepseekSymbol);
+      });
+
+      document.getElementById('volatilityMarketSelect').addEventListener('change', function () {
+        const newSym = this.value;
+        unsubscribeSymbol(state.deepseekSymbol);
+        state.deepseekSymbol = newSym;
+        state.deepseekDigits = [];
+        state.deepseekTickCount = 0;
+        state._tickStreamHistory = [];
+        state.deepseekPrediction = 5;
+        state.deepseekConfidence = 65;
+        subscribeSymbol(newSym);
+        document.getElementById('tickStream').innerHTML = '<i class="fas fa-chart-line"></i> Waiting for ticks...';
+        document.getElementById('circlesContainerDigits').innerHTML = '';
+        document.getElementById('selectedDigitHistory').innerHTML = '';
+        document.getElementById('finalPredictionDigit').textContent = '—';
+        showSnackbar('Switched to ' + newSym);
+      });
+
+      document.getElementById('refreshMarketDataBtn').addEventListener('click', function () {
+        showSnackbar('Re-syncing ' + state.deepseekSymbol + '...');
+        unsubscribeSymbol(state.deepseekSymbol);
+        setTimeout(function () {
+          subscribeSymbol(state.deepseekSymbol);
+        }, 300);
+      });
+
+      document.getElementById('startFullAnalysisBtn').addEventListener('click', startDeepAnalysis);
+      document.getElementById('rerunAnalysisBtn').addEventListener('click', startDeepAnalysis);
+
+      document.getElementById('closeDeepseekPage').addEventListener('click', function () {
+        document.getElementById('deepseekPage').classList.remove('active');
+        document.getElementById('dashboard').style.display = 'block';
+        if (state.currentUser) {
+          subscribeSymbol(CLASSIC_SYMBOL);
+        }
+      });
+
+      const ctxF = document.getElementById('freqCanvas').getContext('2d');
+      state.classicChart = new Chart(ctxF, {
+        type: 'bar',
+        data: {
+          labels: ['0','1','2','3','4','5','6','7','8','9'],
+          datasets: [{ label: 'Freq', data: [0,0,0,0,0,0,0,0,0,0], backgroundColor: '#ff8800', borderRadius: 6 }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: true, animation: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { beginAtZero: true, ticks: { color: '#888', font: { size: 10 } } },
+            x: { ticks: { color: '#888', font: { size: 10 } } }
+          }
+        }
+      });
+
+      const ctxM2 = document.getElementById('marketFreqCanvas').getContext('2d');
+      state.deepseekChart = new Chart(ctxM2, {
+        type: 'bar',
+        data: {
+          labels: ['0','1','2','3','4','5','6','7','8','9'],
+          datasets: [{ label: 'Freq', data: [0,0,0,0,0,0,0,0,0,0], backgroundColor: '#ff8800', borderRadius: 6 }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: true, animation: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { beginAtZero: true, ticks: { color: '#888', font: { size: 10 } } },
+            x: { ticks: { color: '#888', font: { size: 10 } } }
+          }
+        }
+      });
+
+      resizeCanvasM();
+      window.addEventListener('resize', resizeCanvasM);
+      setInterval(drawMatrix, 60);
+
+      loadSavedTheme();
+
+      document.getElementById('dashboard').style.display = 'none';
+      document.getElementById('loginSection').style.display = 'block';
+
+      dbg('Connecting to Deriv API...', 'ok');
+      connectDeriv();
+    });
+  </script>
+
+</body>
+
+</html

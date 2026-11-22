@@ -1,0 +1,8 @@
+{
+  "name": "DollarSketch Analysis Tool",
+  "description": "Real-time Deriv synthetic volatility digit analysis terminal featuring live WebSocket tick streams, D-Circles probability tracking, and DeepSeek Quantum pattern predictions.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
